@@ -34,7 +34,7 @@ class DashboardController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $userId = Auth::guard('web')->user()->id;
+        $userId = Auth::guard('admin')->user()->id;
         $provinceId = $request->province_id;
         $districtId = $request->district_id;
         $message = $request->message;
@@ -46,6 +46,6 @@ class DashboardController extends Controller
             'message' => $message,
         ]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Lưu thành công');
     }
 }

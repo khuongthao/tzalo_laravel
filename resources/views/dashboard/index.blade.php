@@ -11,6 +11,11 @@
     <!-- Small boxes (Stat box) -->
     <div class="card mb-2 row" id="form-search-code">
         <div class="card-body col-7" style="padding: 30px 50px">
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
             <form action="{{ route('dashboard.index') }}" method="GET" class="flex items-center gap-4 mb-4">
                 <select name="province_id" class="border rounded px-4 py-2">
                     <option value="">-- Chọn Tỉnh/Thành --</option>
@@ -71,7 +76,7 @@
                 <input type="hidden" name="district_id" id="district_id_hidden">
                 <textarea placeholder="Nhập tin nhắn..." class="chat-input" name="message"></textarea>
                 <br/>
-                <button type="submit" class="chat-send-btn">Gửi</button>
+                <button type="submit" class="chat-send-btn">Lưu thông tin</button>
             </form>
         </div>
     </div>
