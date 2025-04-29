@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateAdminRequest;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\UpdateAdminRequest;
+use App\Models\Customers;
+use App\Models\District;
+use App\Models\Province;
 use App\Services\AdminService;
 use App\Services\AdminStaticService;
 use App\Services\ApiService;
@@ -21,13 +24,30 @@ use Illuminate\Support\Facades\Route;
 
 class AdminController extends Controller
 {
-    public function login()
+    public function login(Request $request)
     {
         try {
+            $provinceId = $request->province_id ?? '';
+            $districtId = $request->district_id ?? '';
+
+            $provinces = Province::all()->keyBy('id')->toArray();
+            $districts = District::all()->keyBy('id')->toArray();
+            $customers = Customers::whereIn('user_type_id', [4])
+                ->whereNotNull('province_id')
+                ->where('phone', '!=', '')
+                ->when($provinceId, function ($q) use ($provinceId) {
+                    $q->where('province_id', $provinceId);
+                })
+                ->when($districtId, function ($q) use ($districtId) {
+                    $q->where('district_id', $districtId);
+                })
+                ->paginate(12);
+
             if (!Auth::check()) {
-                return view("pages.login");
+                return view("pages.login", compact('provinces', 'districts', 'customers'));
             }
-            return redirect()->route("dashboard.index");
+
+            return view('dashboard.index', compact('provinces', 'districts', 'customers'));
         } catch (\Exception $e) {
             throw $e;
         }

@@ -1,43 +1,39 @@
 @if ($paginator->hasPages())
-    <ul class="pagination">
+    <ul class="pagination flex flex-wrap justify-center gap-2 mt-4">
         {{-- Previous Page --}}
-        <li class="{{ $paginator->onFirstPage() ? 'disabled' : '' }}">
-            <a href="{{ $paginator->previousPageUrl() ?? '#' }}">‹</a>
+        <li class="{{ $paginator->onFirstPage() ? 'opacity-50 pointer-events-none' : '' }}">
+            <a href="{{ $paginator->previousPageUrl() ?? '#' }}" class="px-3 py-1 border rounded">‹</a>
         </li>
 
-        {{-- Always show 1 --}}
+        {{-- Always show page 1 --}}
         @if ($paginator->currentPage() > 3)
-            <li><a href="{{ $paginator->url(1) }}">1</a></li>
-            <li class="disabled">...</li>
-        @elseif ($paginator->currentPage() === 3)
-            <li><a href="{{ $paginator->url(1) }}">1</a></li>
+            <li><a href="{{ $paginator->url(1) }}" class="px-3 py-1 border rounded">1</a></li>
+            <li class="pointer-events-none px-2">...</li>
         @endif
 
-        {{-- Page links --}}
-        @foreach ($elements as $element)
-            @if (is_array($element))
-                @foreach ($element as $page => $url)
-                    <li class="{{ $page == $paginator->currentPage() ? 'active' : '' }}">
-                        <a href="{{ $url }}">{{ $page }}</a>
-                    </li>
-                @endforeach
-            @endif
-        @endforeach
+        {{-- Pages around current --}}
+        @for ($i = max(1, $paginator->currentPage() - 2); $i <= min($paginator->lastPage(), $paginator->currentPage() + 2); $i++)
+            <li>
+                <a href="{{ $paginator->url($i) }}"
+                   class="px-3 py-1 border rounded {{ $i == $paginator->currentPage() ? 'bg-gray-800 text-white' : '' }}">
+                    {{ $i }}
+                </a>
+            </li>
+        @endfor
 
-        {{-- Always show last --}}
-        @if ($paginator->lastPage() - $paginator->currentPage() > 2)
-            <li class="disabled">...</li>
-            <li><a href="{{ $paginator->url($paginator->lastPage()) }}">{{ $paginator->lastPage() }}</a></li>
-        @elseif ($paginator->lastPage() - $paginator->currentPage() === 2)
-            <li><a href="{{ $paginator->url($paginator->lastPage()) }}">{{ $paginator->lastPage() }}</a></li>
+        {{-- Always show last page --}}
+        @if ($paginator->currentPage() < $paginator->lastPage() - 2)
+            <li class="pointer-events-none px-2">...</li>
+            <li><a href="{{ $paginator->url($paginator->lastPage()) }}" class="px-3 py-1 border rounded">{{ $paginator->lastPage() }}</a></li>
         @endif
 
         {{-- Next Page --}}
-        <li class="{{ !$paginator->hasMorePages() ? 'disabled' : '' }}">
-            <a href="{{ $paginator->nextPageUrl() ?? '#' }}">›</a>
+        <li class="{{ !$paginator->hasMorePages() ? 'opacity-50 pointer-events-none' : '' }}">
+            <a href="{{ $paginator->nextPageUrl() ?? '#' }}" class="px-3 py-1 border rounded">›</a>
         </li>
     </ul>
 @endif
+
 <style>
     .pagination {
         display: flex;
@@ -49,32 +45,9 @@
         margin: 1rem 0;
     }
 
-    .pagination li {
-        min-width: 36px;
-        text-align: center;
-        padding: 6px 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s;
-        color: #2c3e50;
-    }
-
     .pagination li:hover {
         background-color: #f0f0f0;
     }
 
-    .pagination li.active {
-        background-color: #2c3e50;
-        color: white;
-        font-weight: bold;
-        border-color: #2c3e50;
-    }
-
-    .pagination li.disabled {
-        color: #ccc;
-        cursor: not-allowed;
-        border-color: #eee;
-    }
 
 </style>
