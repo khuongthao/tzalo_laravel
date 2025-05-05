@@ -39,7 +39,7 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                <form action="{{ route('dashboard.index') }}" method="GET" class="row g-2 mb-4">
+                <form action="{{ route('login') }}" method="GET" class="row g-2 mb-4">
                     <div class="col-12 col-md">
                         <select name="province_id" class="form-control">
                             <option value="">-- Chọn Tỉnh/Thành --</option>
