@@ -12,14 +12,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  *
  * @package namespace App\Models;
  */
-class Customers extends Authenticatable implements Transformable
+class Ward extends Authenticatable implements Transformable
 {
     use TransformableTrait;
 
     protected $guarded = [];
 
-    public function values()
-    {
-        return $this->hasMany(CustomerValue::class, 'user_id', 'user_id');
-    }
 }

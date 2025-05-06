@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\CreateAdminRequest;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\UpdateAdminRequest;
 use App\Models\Customers;
+use App\Models\CustomerValue;
 use App\Models\District;
 use App\Models\Province;
 use App\Services\AdminService;
@@ -43,6 +44,16 @@ class AdminController extends Controller
                 })
                 ->paginate(12);
 
+            foreach ($customers as $customer) {
+                $customer->address = CustomerValue::where([
+                    'user_id' => $customer->user_id,
+                    'user_field' => 'address',
+                ])->first('value')->value ?? null;
+                $customer->avatar = CustomerValue::where([
+                    'user_id' => $customer->user_id,
+                    'user_field' => 'image',
+                ])->first('value')->value ?? null;
+            }
             if (!Auth::check()) {
                 return view("pages.login", compact('provinces', 'districts', 'customers'));
             }
