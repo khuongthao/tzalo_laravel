@@ -151,7 +151,11 @@
                                         <h5 class="card-title text-danger">{{ $pharmacy->fullname }}</h5>
                                         <p class="card-text">
                                             <i class="fas fa-map-marker-alt"></i>
+<<<<<<< HEAD
                                             Địa chỉ: {{ !empty($pharmacy->address) ? $pharmacy->address . ', '. @$provinces[$pharmacy->province_id]['name'] : @$provinces[$pharmacy->province_id]['name'] }}<br>
+=======
+                                            Địa chỉ: {{ $pharmacy->address }}<br>
+>>>>>>> eb64f18544b8c03cfa9225bb58d3f1d2a2b8a1d0
                                             <i class="fas fa-phone"></i>
                                             Số điện thoại: {{ $pharmacy->phone }}
                                         </p>

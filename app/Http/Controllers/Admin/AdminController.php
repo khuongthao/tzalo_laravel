@@ -11,6 +11,7 @@ use App\Models\Customers;
 use App\Models\CustomerValue;
 use App\Models\District;
 use App\Models\Province;
+use App\Models\Ward;
 use App\Services\AdminService;
 use App\Services\AdminStaticService;
 use App\Services\ApiService;
@@ -45,14 +46,36 @@ class AdminController extends Controller
                 ->paginate(12);
 
             foreach ($customers as $customer) {
-                $customer->address = CustomerValue::where([
+                $address = '';
+                $valueAddress = CustomerValue::where([
                     'user_id' => $customer->user_id,
                     'user_field' => 'address',
                 ])->first('value')->value ?? null;
+                $wardId = CustomerValue::where([
+                    'user_id' => $customer->user_id,
+                    'user_field' => 'ward_id',
+                ])->first('value')->value ?? null;
+
+                $ward = Ward::where('id', $wardId)->first('name')->name ?? null;
+
                 $customer->avatar = CustomerValue::where([
                     'user_id' => $customer->user_id,
                     'user_field' => 'image',
                 ])->first('value')->value ?? null;
+                $customer->district_id = CustomerValue::where([
+                    'user_id' => $customer->user_id,
+                    'user_field' => 'district_id',
+                ])->first('value')->value ?? null;
+                if (!empty($valueAddress)) {
+                    $address = $valueAddress;
+                }
+                if (!empty($ward)) {
+                    $address = !empty($address) ? $address . ', ' . $ward : $ward;
+                }
+                if (!empty($customer->district_id)) {
+                    $address = !empty($address) ? $address . ', ' . @$districts[$customer->district_id]['name'] : @$districts[$customer->district_id]['name'];
+                }
+                $customer->address = !empty($address) ? $address . ', ' . @$provinces[$customer->province_id]['name'] : @$provinces[$customer->province_id]['name'];
             }
             if (!Auth::check()) {
                 return view("pages.login", compact('provinces', 'districts', 'customers'));
